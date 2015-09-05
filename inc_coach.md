@@ -1,6 +1,6 @@
 ##Coach
 
-Wij coachen Managers, Functioneel & Technisch Beheerders en Eind Gebruikers bij het gebruiken van Cloud toepassingen.
+Wij coachen Managers, Functioneel & Technisch Beheerders en Eind Gebruikers bij het gebruik van Cloud toepassingen.
 
 Ervaring in IT-management en projectleider rollen
 
