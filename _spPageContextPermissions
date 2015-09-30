@@ -1,0 +1,78 @@
+function _spPageContextPermissions(requiredPermissions, maskLow, maskHigh) {
+    maskLow = maskLow || _spPageContextInfo.webPermMasks.Low;
+    maskHigh = maskHigh || _spPageContextInfo.webPermMasks.High;
+    var permissions = {
+        _hasRequiredPermissions: true,
+        _matched: [],//all matching permissions
+        _notmatched: [],//all requiredPermissions that do not match
+        _permissions: [],//all permissions
+        _unchecked: []//permissions not in requiredPermissions
+    };
+
+    for (var permLevelName in SP.PermissionKind.prototype) {
+        if (SP.PermissionKind.hasOwnProperty(permLevelName)) {
+            var permLevel = SP.PermissionKind.parse(permLevelName),
+                checkPermissionMask = maskLow;
+            if (permLevel !== 65) { //exclude fullMask comparisons
+                if (permLevel > 32) { //compare with High mask
+                    checkPermissionMask = maskHigh;
+                    permLevel = permLevel - 31;
+                }
+                permissions[permLevelName] = (Math.floor(checkPermissionMask / Math.pow(2, permLevel)) % 2) == 1;
+                permissions._permissions.push(permLevelName);
+            }
+        }
+    }
+    permissions._unchecked = permissions._permissions.filter(function (permLevelName) {
+        if (requiredPermissions.hasOwnProperty(permLevelName)) {
+            if (permissions[permLevelName] === requiredPermissions[permLevelName]) {
+                permissions._matched.push(permLevelName);
+            } else {
+                permissions._hasRequiredPermissions = false;
+                permissions._notmatched.push(permLevelName);
+            }
+        } else {
+            return (true);
+        }
+    });
+    return (permissions);
+}
+
+var pagepermissions = _spPageContextPermissions({
+    "viewListItems": false, // 1
+    "addListItems": false, // 2
+    "editListItems": false, // 3
+    "deleteListItems": false, // 4
+    "approveItems": false, // 5
+    "openItems": false, // 6
+    "viewVersions": false, // 7
+    "deleteVersions": false, // 8
+    "cancelCheckout": false, // 9
+    "managePersonalViews": false, // 10
+    "manageLists": false, // 12
+    "viewFormPages": false, // 13
+    "anonymousSearchAccessList": false, // 14
+    "open": false, // 17
+    "viewPages": false, // 18
+    "addAndCustomizePages": false, // 19
+    "applyThemeAndBorder": false, // 20
+    "applyStyleSheets": false, // 21
+    "viewUsageData": false, // 22
+    "createSSCSite": false, // 23
+    "manageSubwebs": false, // 24
+    "createGroups": false, // 25
+    "managePermissions": false, // 26
+    "browseDirectories": false, // 27
+    "browseUserInfo": false, // 28
+    "addDelPrivateWebParts": false, // 29
+    "updatePersonalWebParts": false, // 30
+    "manageWeb": false, // 31
+    "anonymousSearchAccessWebLists": false, // 32
+    "useClientIntegration": false, // 37
+    "useRemoteAPIs": false, // 38
+    "manageAlerts": false, // 39
+    "createAlerts": false, // 40
+    "editMyUserInfo": false, // 41
+    "enumeratePermissions": false, // 63
+}, 201528033, 432);
+console.info(pagepermissions);
